@@ -18,31 +18,30 @@
             scaleFactor: null,
             offsetX: null,
             offsetY: null,
-        },
+        };
 
-        gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
+    var gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
         gImagesMetrics = {
             DEFAULT_WIDTH: 150,
             DEFAULT_HEIGHT: 250,
-            ADDITION: 20,
             OFFSET_X: 10,
             OFFSET_Y: 20
         },
         gImages = {},
-        gImagesOnCanvasStack = [],
+        gImagesOnCanvasStack = [];
 
-        gCurrentDraggingImageIndex = -1,
+    var gCurrentDraggingImageIndex = -1,
         gLastCoords = { x: null, y: null },
-        gIsAnimationFrameRequested = false,
+        gIsAnimationFrameRequested = false;
 
-        gButtons = [];
+    var gButtons = [];
 
     gInitCanvasAndButtonsResizing();
     gStartImagesLoading();
 
     $canvas.onmousedown = function(aMouseEvent) {
         var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
-        gCurrentDraggingImageIndex = gIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
+        gCurrentDraggingImageIndex = gGetIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
         if (~gCurrentDraggingImageIndex) {
             gLastCoords.x = currentCoords.x;
             gLastCoords.y = currentCoords.y;
@@ -143,7 +142,7 @@
         }
 
         function buttonClickAction(aNumber) {
-            var lastImageOnStack, index = indexOfImageOnStack(aNumber);
+            var lastImageOnStack, index = getIndexOfImageOnStack(aNumber);
 
             if (~index) {
                 // Remove image from canvas image stack array.
@@ -159,7 +158,7 @@
             gDraw();
         }
 
-        function indexOfImageOnStack(aNumber) {
+        function getIndexOfImageOnStack(aNumber) {
             for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
                 if (gImagesOnCanvasStack[i].imageNo === aNumber) {
                     return i;
@@ -190,7 +189,7 @@
         return { x: x, y: y };
     }
 
-    function gIndexOfImageUnderMouse(aX, aY) {
+    function gGetIndexOfImageUnderMouse(aX, aY) {
         var currentImage;
         for (var i = gImagesOnCanvasStack.length - 1; i >= 0; i--) {
             currentImage = gImagesOnCanvasStack[i];
