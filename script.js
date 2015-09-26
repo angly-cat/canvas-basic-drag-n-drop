@@ -135,7 +135,12 @@
     }
 
     function gDraw() {
-        gCtx.clearRect(-gCanvasMetrics.offsetX, -gCanvasMetrics.offsetY, gCanvasMetrics.width, gCanvasMetrics.height);
+        gCtx.clearRect(
+            -gCanvasMetrics.offsetX/gCanvasMetrics.scaleFactor,
+            -gCanvasMetrics.offsetY/gCanvasMetrics.scaleFactor,
+            gCanvasMetrics.width/gCanvasMetrics.scaleFactor,
+            gCanvasMetrics.height/gCanvasMetrics.scaleFactor
+        );
 
         var currentImage;
         for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
