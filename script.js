@@ -1,11 +1,13 @@
 (function() {
     'use strict';
 
+    // Variables with names starting with '$' are DOM-elements.
     // Function and variables with names starting with 'g' are global.
     // Variables with names starting with 'a' are parameters.
 
-    var gCanvas = document.getElementById('canvas'),
-        gCtx = gCanvas.getContext('2d'),
+    var $buttonsContainer = document.getElementById('buttons_container'),
+        $canvas = document.getElementById('canvas'),
+        gCtx = $canvas.getContext('2d'),
         gCanvasMetrics = {
             DEFAULT_WIDTH: 640,
             DEFAULT_HEIGHT: 480,
@@ -36,8 +38,8 @@
             gCanvasMetrics.width = window.innerWidth;
             gCanvasMetrics.height = window.innerHeight;
 
-            gCanvas.width = gCanvasMetrics.width;
-            gCanvas.height = gCanvasMetrics.height;
+            $canvas.width = gCanvasMetrics.width;
+            $canvas.height = gCanvasMetrics.height;
             console.log('Canvas size is set to ' + gCanvasMetrics.width + 'x' + gCanvasMetrics.height);
 
             gCanvasMetrics.scaleFactor = Math.min(gCanvasMetrics.width/gCanvasMetrics.DEFAULT_WIDTH,
@@ -53,12 +55,19 @@
     function gStartImagesLoading() {
         for (var i = 0, len = gImagesPaths.length; i < len; i++) {
             gImages[i] = new Image();
-            gImages[i].onload = addButtonForImage.bind(null, i);
+            gImages[i].onload = addButtonForImage.bind(null, i, len - 1);
             gImages[i].src = gImagesPaths[i];
         }
 
-        function addButtonForImage(aNumber) {
+        function addButtonForImage(aNumber, aTotal) {
             console.log('Image ' + aNumber + ' is loaded.');
+
+            var $button = document.createElement('button');
+            $button.className = 'image_button';
+            $button.textContent = 'Image ' + aNumber;
+            $button.style.top = gCanvasMetrics.height*0.8 + 'px';
+            $button.style.left = (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*(0.1 + 0.8*aNumber/aTotal)) + 'px';
+            $buttonsContainer.insertBefore($button, null);
         }
     }
 })();
