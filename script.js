@@ -21,7 +21,9 @@
         gImagesMetrics = {
             DEFAULT_WIDTH: 150,
             DEFAULT_HEIGHT: 250,
-            ADDITION: 20
+            ADDITION: 20,
+            OFFSET_X: 10,
+            OFFSET_Y: 20
         },
         gImages = {},
         gImagesOnCanvasStack = [],
@@ -101,13 +103,18 @@
         }
 
         function buttonClickAction(aNumber) {
-            var index = indexOfImageOnStack(aNumber);
+            var lastImageOnStack, index = indexOfImageOnStack(aNumber);
+
             if (~index) {
                 gClearCanvas();
                 // Remove image from canvas image stack array.
                 gImagesOnCanvasStack = gImagesOnCanvasStack.slice(0, index).concat(gImagesOnCanvasStack.slice(index + 1));
             } else {
-                gImagesOnCanvasStack.push({x: 100 + 100*aNumber, y: 200 + 10*aNumber, imageNo: aNumber});
+                lastImageOnStack = gImagesOnCanvasStack.length ? gImagesOnCanvasStack[gImagesOnCanvasStack.length - 1] : null;
+                gImagesOnCanvasStack.push({
+                    x: lastImageOnStack ? lastImageOnStack.x + gImagesMetrics.OFFSET_X : (gCanvasMetrics.DEFAULT_WIDTH - gImagesMetrics.DEFAULT_WIDTH)/2,
+                    y: lastImageOnStack ? lastImageOnStack.y + gImagesMetrics.OFFSET_Y : (gCanvasMetrics.DEFAULT_HEIGHT - gImagesMetrics.DEFAULT_HEIGHT)/2,
+                    imageNo: aNumber});
             }
             gDraw();
         }
