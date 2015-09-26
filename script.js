@@ -17,6 +17,7 @@
             offsetX: null,
             offsetY: null,
         },
+
         gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
         gImagesMetrics = {
             DEFAULT_WIDTH: 150,
@@ -27,6 +28,11 @@
         },
         gImages = {},
         gImagesOnCanvasStack = [],
+
+        gCurrentDraggingImageIndex = -1,
+        gDraggingDeltas = { x: null, y: null },
+        gIsAnimationFrameRequested = false,
+
         gButtons = [];
 
     gInitCanvasAndButtonsResizing();
@@ -106,7 +112,6 @@
             var lastImageOnStack, index = indexOfImageOnStack(aNumber);
 
             if (~index) {
-                gClearCanvas();
                 // Remove image from canvas image stack array.
                 gImagesOnCanvasStack = gImagesOnCanvasStack.slice(0, index).concat(gImagesOnCanvasStack.slice(index + 1));
             } else {
@@ -130,7 +135,7 @@
     }
 
     function gDraw() {
-        gClearCanvas();
+        gCtx.clearRect(-gCanvasMetrics.offsetX, -gCanvasMetrics.offsetY, gCanvasMetrics.width, gCanvasMetrics.height);
 
         var currentImage;
         for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
@@ -139,17 +144,52 @@
         }
     }
 
-    function gClearCanvas() {
-        var currentImage;
-        for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
-            currentImage = gImagesOnCanvasStack[i];
-            // Addition is to enlarge clearing area for correct clearing.
-            gCtx.clearRect(
-                currentImage.x - gImagesMetrics.ADDITION,
-                currentImage.y - gImagesMetrics.ADDITION,
-                gImagesMetrics.DEFAULT_WIDTH + 2*gImagesMetrics.ADDITION,
-                gImagesMetrics.DEFAULT_HEIGHT + 2*gImagesMetrics.ADDITION
-            );
+    $canvas.onmousedown = function(aMouseEvent) {
+        var canvasCoords = calculateCanvasCoords(aMouseEvent);
+        gCurrentDraggingImageIndex = gIndexOfImageUnderMouse(canvasCoords.x, canvasCoords.y);
+        if (~gCurrentDraggingImageIndex) {
+            gDraggingDeltas.x = canvasCoords.x;
+            gDraggingDeltas.y = canvasCoords.y;
         }
+    };
+
+    $canvas.onmouseup = function(aMouseEvent) {
+        gCurrentDraggingImageIndex = -1;
+    };
+
+    $canvas.onmousemove = function(aMouseEvent) {
+        var canvasCoords = calculateCanvasCoords(aMouseEvent);
+        if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
+            gIsAnimationFrameRequested = true;
+
+            gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += canvasCoords.x - gDraggingDeltas.x;
+            gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += canvasCoords.y - gDraggingDeltas.y;
+
+            gDraggingDeltas.x = canvasCoords.x;
+            gDraggingDeltas.y = canvasCoords.y;
+
+            window.requestAnimationFrame(function() {
+                gIsAnimationFrameRequested = false;
+                gDraw();
+            });
+        }
+    };
+
+    function calculateCanvasCoords(aMouseEvent) {
+        var x = (aMouseEvent.clientX - gCanvasMetrics.offsetX)*gCanvasMetrics.scaleFactor,
+            y = (aMouseEvent.clientY - gCanvasMetrics.offsetY)*gCanvasMetrics.scaleFactor;
+        return { x: x, y: y};
+    }
+
+    function gIndexOfImageUnderMouse(aX, aY) {
+        var currentImage;
+        for (var i = gImagesOnCanvasStack.length - 1; i >= 0; i--) {
+            currentImage = gImagesOnCanvasStack[i];
+            if (aX >= currentImage.x && aX <= currentImage.x + gImagesMetrics.DEFAULT_WIDTH &&
+                aY >= currentImage.y && aY <= currentImage.y + gImagesMetrics.DEFAULT_HEIGHT) {
+                return i;
+            }
+        }
+        return -1;
     }
 })();
