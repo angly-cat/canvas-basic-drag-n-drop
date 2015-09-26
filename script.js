@@ -18,6 +18,11 @@
             offsetY: null,
         },
         gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
+        gImagesMetrics = {
+            DEFAULT_WIDTH: 150,
+            DEFAULT_HEIGHT: 250,
+            ADDITION: 20
+        },
         gImages = {},
         gImagesOnCanvasStack = [],
         gButtons = [];
@@ -92,18 +97,52 @@
 
             gButtons.push($button);
 
-            $button.onclick = function() {
-                gImagesOnCanvasStack.push({x: 100 + 100*aNumber, y: 200 + 10*aNumber, image: aNumber});
-                gDraw();
-            };
+            $button.onclick = buttonClickAction.bind(null, aNumber);
+        }
+
+        function buttonClickAction(aNumber) {
+            var index = indexOfImageOnStack(aNumber);
+            if (~index) {
+                gClearCanvas();
+                // Remove image from canvas image stack array.
+                gImagesOnCanvasStack = gImagesOnCanvasStack.slice(0, index).concat(gImagesOnCanvasStack.slice(index + 1));
+            } else {
+                gImagesOnCanvasStack.push({x: 100 + 100*aNumber, y: 200 + 10*aNumber, imageNo: aNumber});
+            }
+            gDraw();
+        }
+
+        function indexOfImageOnStack(aNumber) {
+            for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
+                if (gImagesOnCanvasStack[i].imageNo === aNumber) {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 
     function gDraw() {
+        gClearCanvas();
+
         var currentImage;
         for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
             currentImage = gImagesOnCanvasStack[i];
-            gCtx.drawImage(gImages[currentImage.image], currentImage.x, currentImage.y);
+            gCtx.drawImage(gImages[currentImage.imageNo], currentImage.x, currentImage.y);
+        }
+    }
+
+    function gClearCanvas() {
+        var currentImage;
+        for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
+            currentImage = gImagesOnCanvasStack[i];
+            // Addition is to enlarge clearing area for correct clearing.
+            gCtx.clearRect(
+                currentImage.x - gImagesMetrics.ADDITION,
+                currentImage.y - gImagesMetrics.ADDITION,
+                gImagesMetrics.DEFAULT_WIDTH + 2*gImagesMetrics.ADDITION,
+                gImagesMetrics.DEFAULT_HEIGHT + 2*gImagesMetrics.ADDITION
+            );
         }
     }
 })();
