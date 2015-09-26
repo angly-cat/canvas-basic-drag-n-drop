@@ -18,12 +18,13 @@
             offsetY: null,
         },
         gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
-        gImages = {};
+        gImages = {},
+        gButtons = [];
 
-    gInitCanvasResizing();
+    gInitCanvasAndButtonsResizing();
     gStartImagesLoading();
 
-    function gInitCanvasResizing() {
+    function gInitCanvasAndButtonsResizing() {
         var debounceTmt = null;
 
         //initial canvas size setting
@@ -31,7 +32,10 @@
 
         window.onresize = function() {
             clearTimeout(debounceTmt);
-            debounceTmt = setTimeout(setCanvasSize, 100);
+            debounceTmt = setTimeout(function() {
+                setCanvasSize();
+                setButtonsPosition();
+            }, 100);
         };
 
         function setCanvasSize() {
@@ -50,24 +54,42 @@
             gCanvasMetrics.offsetY = Math.floor((gCanvasMetrics.height - gCanvasMetrics.DEFAULT_HEIGHT*gCanvasMetrics.scaleFactor)/2);
             console.log('Offsets: x=' + gCanvasMetrics.offsetX + ', y=' + gCanvasMetrics.offsetY);
         }
+
+        function setButtonsPosition() {
+            for (var i = 0, len = gButtons.length; i < len; i++) {
+                gSetButtonPosition(gButtons[i]);
+            }
+        }
+    }
+
+    function gSetButtonPosition(aButton) {
+        aButton.style.top = gCanvasMetrics.height*0.8 + 'px';
+        aButton.style.left = (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*(0.1 + 0.8*aButton.number/(gImagesPaths.length - 1))) + 'px';
     }
 
     function gStartImagesLoading() {
         for (var i = 0, len = gImagesPaths.length; i < len; i++) {
             gImages[i] = new Image();
-            gImages[i].onload = addButtonForImage.bind(null, i, len - 1);
+            gImages[i].onload = addButtonForImage.bind(null, i);
             gImages[i].src = gImagesPaths[i];
         }
 
-        function addButtonForImage(aNumber, aTotal) {
+        function addButtonForImage(aNumber) {
             console.log('Image ' + aNumber + ' is loaded.');
 
             var $button = document.createElement('button');
             $button.className = 'image_button';
-            $button.textContent = 'Image ' + aNumber;
-            $button.style.top = gCanvasMetrics.height*0.8 + 'px';
-            $button.style.left = (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*(0.1 + 0.8*aNumber/aTotal)) + 'px';
+            $button.textContent = 'Image ' + (aNumber + 1);
+            $button.number = aNumber;
+
+            gSetButtonPosition($button);
+
             $buttonsContainer.insertBefore($button, null);
+
+            gButtons.push($button);
+
+            $button.onclick = function() {
+            };
         }
     }
 })();
