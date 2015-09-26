@@ -181,8 +181,8 @@
     };
 
     function calculateCanvasCoords(aMouseEvent) {
-        var x = (aMouseEvent.clientX - gCanvasMetrics.offsetX)*gCanvasMetrics.scaleFactor,
-            y = (aMouseEvent.clientY - gCanvasMetrics.offsetY)*gCanvasMetrics.scaleFactor;
+        var x = (aMouseEvent.clientX - gCanvasMetrics.offsetX)/gCanvasMetrics.scaleFactor,
+            y = (aMouseEvent.clientY - gCanvasMetrics.offsetY)/gCanvasMetrics.scaleFactor;
         return { x: x, y: y};
     }
 
