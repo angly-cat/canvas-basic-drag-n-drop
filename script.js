@@ -80,8 +80,9 @@
     }
 
     function gSetButtonPosition(aButton) {
+        var xFactor = gImagesPaths.length > 1 ? 0.1 + 0.8*aButton.number/(gImagesPaths.length - 1) : 0.5;
         aButton.style.top = gCanvasMetrics.height*0.8 + 'px';
-        aButton.style.left = (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*(0.1 + 0.8*aButton.number/(gImagesPaths.length - 1))) + 'px';
+        aButton.style.left = (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*xFactor) + 'px';
     }
 
     function gStartImagesLoading() {
@@ -158,14 +159,11 @@
         }
     };
 
-    $canvas.onmouseup = function(aMouseEvent) {
-        gCurrentDraggingImageIndex = -1;
-    };
-
     $canvas.onmousemove = function(aMouseEvent) {
-        var canvasCoords = calculateCanvasCoords(aMouseEvent);
         if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
             gIsAnimationFrameRequested = true;
+
+            var canvasCoords = calculateCanvasCoords(aMouseEvent);
 
             gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += canvasCoords.x - gDraggingDeltas.x;
             gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += canvasCoords.y - gDraggingDeltas.y;
@@ -178,6 +176,10 @@
                 gDraw();
             });
         }
+    };
+
+    $canvas.onmouseup = function(aMouseEvent) {
+        gCurrentDraggingImageIndex = -1;
     };
 
     function calculateCanvasCoords(aMouseEvent) {
