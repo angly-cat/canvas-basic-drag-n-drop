@@ -1,6 +1,7 @@
 (function() {
     'use strict';
 
+    // Global variables.
     var canvas = document.getElementById('canvas'),
         ctx = canvas.getContext('2d'),
         canvasMetrics = {
@@ -11,7 +12,9 @@
             scaleFactor: null,
             offsetX: null,
             offsetY: null,
-        };
+        },
+        imagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
+        images = {};
 
     (function initCanvasResizing() {
         var debounceTmt = null;
@@ -40,5 +43,17 @@
 
         //initial canvas size setting
         setCanvasSize();
+    })();
+
+    (function imagesPreloading() {
+        function addButtonForImage(aNumber) {
+            console.log('Image ' + aNumber + ' is loaded.');
+        }
+
+        for (var i = 0, len = imagesPaths.length; i < len; i++) {
+            images[i] = new Image();
+            images[i].onload = addButtonForImage.bind(null, i);
+            images[i].src = imagesPaths[i];
+        }
     })();
 })();
