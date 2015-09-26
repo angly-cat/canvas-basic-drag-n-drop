@@ -19,6 +19,7 @@
         },
         gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
         gImages = {},
+        gImagesOnCanvasStack = [],
         gButtons = [];
 
     gInitCanvasAndButtonsResizing();
@@ -35,6 +36,7 @@
             debounceTmt = setTimeout(function() {
                 setCanvasSize();
                 setButtonsPosition();
+                gDraw();
             }, 100);
         };
 
@@ -53,6 +55,8 @@
             gCanvasMetrics.offsetX = Math.floor((gCanvasMetrics.width - gCanvasMetrics.DEFAULT_WIDTH*gCanvasMetrics.scaleFactor)/2);
             gCanvasMetrics.offsetY = Math.floor((gCanvasMetrics.height - gCanvasMetrics.DEFAULT_HEIGHT*gCanvasMetrics.scaleFactor)/2);
             console.log('Offsets: x=' + gCanvasMetrics.offsetX + ', y=' + gCanvasMetrics.offsetY);
+
+            gCtx.setTransform(gCanvasMetrics.scaleFactor, 0, 0, gCanvasMetrics.scaleFactor, gCanvasMetrics.offsetX, gCanvasMetrics.offsetY);
         }
 
         function setButtonsPosition() {
@@ -89,7 +93,17 @@
             gButtons.push($button);
 
             $button.onclick = function() {
+                gImagesOnCanvasStack.push({x: 100 + 100*aNumber, y: 200 + 10*aNumber, image: aNumber});
+                gDraw();
             };
+        }
+    }
+
+    function gDraw() {
+        var currentImage;
+        for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
+            currentImage = gImagesOnCanvasStack[i];
+            gCtx.drawImage(gImages[currentImage.image], currentImage.x, currentImage.y);
         }
     }
 })();
