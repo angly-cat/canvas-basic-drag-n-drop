@@ -1,10 +1,12 @@
 (function() {
     'use strict';
 
-    // Global variables.
-    var canvas = document.getElementById('canvas'),
-        ctx = canvas.getContext('2d'),
-        canvasMetrics = {
+    // Function and variables with names starting with 'g' are global.
+    // Variables with names starting with 'a' are parameters.
+
+    var gCanvas = document.getElementById('canvas'),
+        gCtx = gCanvas.getContext('2d'),
+        gCanvasMetrics = {
             DEFAULT_WIDTH: 640,
             DEFAULT_HEIGHT: 480,
             width: null,
@@ -13,47 +15,50 @@
             offsetX: null,
             offsetY: null,
         },
-        imagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
-        images = {};
+        gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
+        gImages = {};
 
-    (function initCanvasResizing() {
+    gInitCanvasResizing();
+    gStartImagesLoading();
+
+    function gInitCanvasResizing() {
         var debounceTmt = null;
 
-        function setCanvasSize() {
-            canvasMetrics.width = window.innerWidth;
-            canvasMetrics.height = window.innerHeight;
-
-            canvas.width = canvasMetrics.width;
-            canvas.height = canvasMetrics.height;
-            console.log('Canvas size is set to ' + canvasMetrics.width + 'x' + canvasMetrics.height);
-
-            canvasMetrics.scaleFactor = Math.min(canvasMetrics.width/canvasMetrics.DEFAULT_WIDTH,
-                                                 canvasMetrics.height/canvasMetrics.DEFAULT_HEIGHT);
-            console.log('Scale factor is set to ' + canvasMetrics.scaleFactor);
-
-            canvasMetrics.offsetX = Math.floor((canvasMetrics.width - canvasMetrics.DEFAULT_WIDTH*canvasMetrics.scaleFactor)/2);
-            canvasMetrics.offsetY = Math.floor((canvasMetrics.height - canvasMetrics.DEFAULT_HEIGHT*canvasMetrics.scaleFactor)/2);
-            console.log('Offsets: x=' + canvasMetrics.offsetX + ', y=' + canvasMetrics.offsetY);
-        }
+        //initial canvas size setting
+        setCanvasSize();
 
         window.onresize = function() {
             clearTimeout(debounceTmt);
             debounceTmt = setTimeout(setCanvasSize, 100);
         };
 
-        //initial canvas size setting
-        setCanvasSize();
-    })();
+        function setCanvasSize() {
+            gCanvasMetrics.width = window.innerWidth;
+            gCanvasMetrics.height = window.innerHeight;
 
-    (function imagesPreloading() {
+            gCanvas.width = gCanvasMetrics.width;
+            gCanvas.height = gCanvasMetrics.height;
+            console.log('Canvas size is set to ' + gCanvasMetrics.width + 'x' + gCanvasMetrics.height);
+
+            gCanvasMetrics.scaleFactor = Math.min(gCanvasMetrics.width/gCanvasMetrics.DEFAULT_WIDTH,
+                                                 gCanvasMetrics.height/gCanvasMetrics.DEFAULT_HEIGHT);
+            console.log('Scale factor is set to ' + gCanvasMetrics.scaleFactor);
+
+            gCanvasMetrics.offsetX = Math.floor((gCanvasMetrics.width - gCanvasMetrics.DEFAULT_WIDTH*gCanvasMetrics.scaleFactor)/2);
+            gCanvasMetrics.offsetY = Math.floor((gCanvasMetrics.height - gCanvasMetrics.DEFAULT_HEIGHT*gCanvasMetrics.scaleFactor)/2);
+            console.log('Offsets: x=' + gCanvasMetrics.offsetX + ', y=' + gCanvasMetrics.offsetY);
+        }
+    }
+
+    function gStartImagesLoading() {
+        for (var i = 0, len = gImagesPaths.length; i < len; i++) {
+            gImages[i] = new Image();
+            gImages[i].onload = addButtonForImage.bind(null, i);
+            gImages[i].src = gImagesPaths[i];
+        }
+
         function addButtonForImage(aNumber) {
             console.log('Image ' + aNumber + ' is loaded.');
         }
-
-        for (var i = 0, len = imagesPaths.length; i < len; i++) {
-            images[i] = new Image();
-            images[i].onload = addButtonForImage.bind(null, i);
-            images[i].src = imagesPaths[i];
-        }
-    })();
+    }
 })();
