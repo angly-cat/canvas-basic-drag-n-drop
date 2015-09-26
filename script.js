@@ -5,6 +5,8 @@
     // Function and variables with names starting with 'g' are global.
     // Variables with names starting with 'a' are parameters.
 
+    // Main code.
+
     var $buttonsContainer = document.getElementById('buttons_container'),
         $canvas = document.getElementById('canvas'),
         gCtx = $canvas.getContext('2d'),
@@ -30,13 +32,47 @@
         gImagesOnCanvasStack = [],
 
         gCurrentDraggingImageIndex = -1,
-        gDraggingDeltas = { x: null, y: null },
+        gLastCoords = { x: null, y: null },
         gIsAnimationFrameRequested = false,
 
         gButtons = [];
 
     gInitCanvasAndButtonsResizing();
     gStartImagesLoading();
+
+    $canvas.onmousedown = function(aMouseEvent) {
+        var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
+        gCurrentDraggingImageIndex = gIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
+        if (~gCurrentDraggingImageIndex) {
+            gLastCoords.x = currentCoords.x;
+            gLastCoords.y = currentCoords.y;
+        }
+    };
+
+    $canvas.onmousemove = function(aMouseEvent) {
+        if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
+            gIsAnimationFrameRequested = true;
+
+            var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
+
+            gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += currentCoords.x - gLastCoords.x;
+            gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += currentCoords.y - gLastCoords.y;
+
+            gLastCoords.x = currentCoords.x;
+            gLastCoords.y = currentCoords.y;
+
+            window.requestAnimationFrame(function() {
+                gIsAnimationFrameRequested = false;
+                gDraw();
+            });
+        }
+    };
+
+    $canvas.onmouseup = function(aMouseEvent) {
+        gCurrentDraggingImageIndex = -1;
+    };
+
+    // Functions.
 
     function gInitCanvasAndButtonsResizing() {
         var debounceTmt = null;
@@ -99,14 +135,11 @@
             $button.className = 'image_button';
             $button.textContent = 'Image ' + (aNumber + 1);
             $button.number = aNumber;
-
             gSetButtonPosition($button);
-
             $buttonsContainer.insertBefore($button, null);
+            $button.onclick = buttonClickAction.bind(null, aNumber);
 
             gButtons.push($button);
-
-            $button.onclick = buttonClickAction.bind(null, aNumber);
         }
 
         function buttonClickAction(aNumber) {
@@ -120,7 +153,8 @@
                 gImagesOnCanvasStack.push({
                     x: lastImageOnStack ? lastImageOnStack.x + gImagesMetrics.OFFSET_X : (gCanvasMetrics.DEFAULT_WIDTH - gImagesMetrics.DEFAULT_WIDTH)/2,
                     y: lastImageOnStack ? lastImageOnStack.y + gImagesMetrics.OFFSET_Y : (gCanvasMetrics.DEFAULT_HEIGHT - gImagesMetrics.DEFAULT_HEIGHT)/2,
-                    imageNo: aNumber});
+                    imageNo: aNumber
+                });
             }
             gDraw();
         }
@@ -150,42 +184,10 @@
         }
     }
 
-    $canvas.onmousedown = function(aMouseEvent) {
-        var canvasCoords = calculateCanvasCoords(aMouseEvent);
-        gCurrentDraggingImageIndex = gIndexOfImageUnderMouse(canvasCoords.x, canvasCoords.y);
-        if (~gCurrentDraggingImageIndex) {
-            gDraggingDeltas.x = canvasCoords.x;
-            gDraggingDeltas.y = canvasCoords.y;
-        }
-    };
-
-    $canvas.onmousemove = function(aMouseEvent) {
-        if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
-            gIsAnimationFrameRequested = true;
-
-            var canvasCoords = calculateCanvasCoords(aMouseEvent);
-
-            gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += canvasCoords.x - gDraggingDeltas.x;
-            gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += canvasCoords.y - gDraggingDeltas.y;
-
-            gDraggingDeltas.x = canvasCoords.x;
-            gDraggingDeltas.y = canvasCoords.y;
-
-            window.requestAnimationFrame(function() {
-                gIsAnimationFrameRequested = false;
-                gDraw();
-            });
-        }
-    };
-
-    $canvas.onmouseup = function(aMouseEvent) {
-        gCurrentDraggingImageIndex = -1;
-    };
-
-    function calculateCanvasCoords(aMouseEvent) {
+    function gCalculateCanvasCoordsFromMouseEvent(aMouseEvent) {
         var x = (aMouseEvent.clientX - gCanvasMetrics.offsetX)/gCanvasMetrics.scaleFactor,
             y = (aMouseEvent.clientY - gCanvasMetrics.offsetY)/gCanvasMetrics.scaleFactor;
-        return { x: x, y: y};
+        return { x: x, y: y };
     }
 
     function gIndexOfImageUnderMouse(aX, aY) {
