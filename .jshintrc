@@ -1,0 +1,6 @@
+{
+	"-W086": true,
+	"-W100": true,
+	"esnext": true,
+	"eqeqeq": true
+}
