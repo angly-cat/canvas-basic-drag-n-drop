@@ -95,22 +95,30 @@
         };
 
         function setCanvasSize() {
-            gCanvasMetrics.width = window.innerWidth;
-            gCanvasMetrics.height = window.innerHeight;
-
-            $canvas.width = gCanvasMetrics.width;
-            $canvas.height = gCanvasMetrics.height;
+            gCanvasMetrics.width  = $canvas.width  = window.innerWidth;
+            gCanvasMetrics.height = $canvas.height = window.innerHeight;
             console.log('Canvas size is set to ' + gCanvasMetrics.width + 'x' + gCanvasMetrics.height);
 
-            gCanvasMetrics.scaleFactor = Math.min(gCanvasMetrics.width/gCanvasMetrics.DEFAULT_WIDTH,
-                                                 gCanvasMetrics.height/gCanvasMetrics.DEFAULT_HEIGHT);
+            gCanvasMetrics.scaleFactor = Math.min(gCanvasMetrics.width /gCanvasMetrics.DEFAULT_WIDTH,
+                                                  gCanvasMetrics.height/gCanvasMetrics.DEFAULT_HEIGHT);
             console.log('Scale factor is set to ' + gCanvasMetrics.scaleFactor);
 
-            gCanvasMetrics.offsetX = Math.floor((gCanvasMetrics.width - gCanvasMetrics.DEFAULT_WIDTH*gCanvasMetrics.scaleFactor)/2);
-            gCanvasMetrics.offsetY = Math.floor((gCanvasMetrics.height - gCanvasMetrics.DEFAULT_HEIGHT*gCanvasMetrics.scaleFactor)/2);
+            gCanvasMetrics.offsetX = Math.floor(
+                (gCanvasMetrics.width - gCanvasMetrics.DEFAULT_WIDTH *gCanvasMetrics.scaleFactor)/2
+            );
+            gCanvasMetrics.offsetY = Math.floor(
+                (gCanvasMetrics.height - gCanvasMetrics.DEFAULT_HEIGHT*gCanvasMetrics.scaleFactor)/2
+            );
             console.log('Offsets: x=' + gCanvasMetrics.offsetX + ', y=' + gCanvasMetrics.offsetY);
 
-            gCtx.setTransform(gCanvasMetrics.scaleFactor, 0, 0, gCanvasMetrics.scaleFactor, gCanvasMetrics.offsetX, gCanvasMetrics.offsetY);
+            gCtx.setTransform(
+                gCanvasMetrics.scaleFactor,
+                0,
+                0,
+                gCanvasMetrics.scaleFactor,
+                gCanvasMetrics.offsetX,
+                gCanvasMetrics.offsetY
+            );
         }
 
         function setButtonsPosition() {
@@ -123,7 +131,8 @@
     function gSetButtonPosition(aButton) {
         var xFactor = gImagesPaths.length > 1 ? 0.1 + 0.8*aButton.number/(gImagesPaths.length - 1) : 0.5;
         aButton.style.top = gCanvasMetrics.height*0.8 + 'px';
-        aButton.style.left = (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*xFactor) + 'px';
+        aButton.style.left =
+            (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*xFactor) + 'px';
     }
 
     function gStartImagesLoading() {
@@ -152,13 +161,18 @@
 
             if (~index) {
                 gClearAreaOfImageWithIndex(index);
-                // Remove image from canvas image stack array.
-                gImagesOnCanvasStack = gImagesOnCanvasStack.slice(0, index).concat(gImagesOnCanvasStack.slice(index + 1));
+
+                var head = gImagesOnCanvasStack.slice(0, index),
+                    tail = gImagesOnCanvasStack.slice(index + 1);
+                gImagesOnCanvasStack = head.concat(tail);
             } else {
-                lastImageOnStack = gImagesOnCanvasStack.length ? gImagesOnCanvasStack[gImagesOnCanvasStack.length - 1] : null;
+                lastImageOnStack = gImagesOnCanvasStack.length ? gImagesOnCanvasStack[gImagesOnCanvasStack.length - 1]
+                                                               : null;
                 gImagesOnCanvasStack.push({
-                    x: lastImageOnStack ? lastImageOnStack.x + gImagesMetrics.OFFSET_X : (gCanvasMetrics.DEFAULT_WIDTH - gImagesMetrics.DEFAULT_WIDTH)/2,
-                    y: lastImageOnStack ? lastImageOnStack.y + gImagesMetrics.OFFSET_Y : (gCanvasMetrics.DEFAULT_HEIGHT - gImagesMetrics.DEFAULT_HEIGHT)/2,
+                    x: lastImageOnStack ? lastImageOnStack.x + gImagesMetrics.OFFSET_X
+                                        : (gCanvasMetrics.DEFAULT_WIDTH  - gImagesMetrics.DEFAULT_WIDTH) /2,
+                    y: lastImageOnStack ? lastImageOnStack.y + gImagesMetrics.OFFSET_Y
+                                        : (gCanvasMetrics.DEFAULT_HEIGHT - gImagesMetrics.DEFAULT_HEIGHT)/2,
                     imageNo: aNumber
                 });
             }
