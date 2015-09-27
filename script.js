@@ -51,18 +51,14 @@
         gCurrentDraggingImageIndex = gGetIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
         if (~gCurrentDraggingImageIndex) {
             $canvasContainer.classList.add('dragging');
+
             gLastCoords.x = currentCoords.x;
             gLastCoords.y = currentCoords.y;
+
+            $canvas.onmousemove = gCanvasOnMouseMoveAction;
         }
     };
 
-    $canvas.onmousemove = function(aMouseEvent) {
-        if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
-            gIsAnimationFrameRequested = true;
-            gMouseEvent = aMouseEvent;
-            window.requestAnimationFrame(gMoveDraggingImageAndRedraw.bind(null, gCurrentDraggingImageIndex));
-        }
-    };
 
     $canvas.onmouseup = function(aMouseEvent) {
         gCurrentDraggingImageIndex = -1;
@@ -70,6 +66,8 @@
         $canvasContainer.classList.remove('dragging');
 
         gMouseEvent = null;
+
+        $canvas.onmousemove = null;
     };
 
     // Functions.
@@ -204,6 +202,14 @@
             gImagesMetrics.DEFAULT_WIDTH + 2*gImagesMetrics.ADDITION,
             gImagesMetrics.DEFAULT_HEIGHT + 2*gImagesMetrics.ADDITION
         );
+    }
+
+    function gCanvasOnMouseMoveAction(aMouseEvent) {
+        if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
+            gIsAnimationFrameRequested = true;
+            gMouseEvent = aMouseEvent;
+            window.requestAnimationFrame(gMoveDraggingImageAndRedraw.bind(null, gCurrentDraggingImageIndex));
+        }
     }
 
     function gMoveDraggingImageAndRedraw(aIndex) {
