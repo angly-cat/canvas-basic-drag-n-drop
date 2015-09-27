@@ -39,12 +39,12 @@
     content: '';
     position: absolute;
     background: url(https://assets-cdn.github.com/favicon.ico) no-repeat;
+    background-size: cover;
     left: 0;
     top: 50%;
     width: 16px;
     height: 16px;
     transform: translateX(-100%) translateY(-50%);
-    border-bottom: 1px solid #333;
 }
 
 /* Chrome button text on buttons selection fix */
