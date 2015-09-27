@@ -8,6 +8,7 @@
     // Main code.
 
     var $buttonsContainer = document.getElementById('buttons_container'),
+        $canvasContainer = document.getElementById('canvas_container'),
         $canvas = document.getElementById('canvas'),
         gCtx = $canvas.getContext('2d'),
         gCanvasMetrics = {
@@ -44,6 +45,7 @@
         var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
         gCurrentDraggingImageIndex = gGetIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
         if (~gCurrentDraggingImageIndex) {
+            $canvasContainer.classList.add('dragging');
             gLastCoords.x = currentCoords.x;
             gLastCoords.y = currentCoords.y;
         }
@@ -73,6 +75,7 @@
 
     $canvas.onmouseup = function(aMouseEvent) {
         gCurrentDraggingImageIndex = -1;
+        $canvasContainer.classList.remove('dragging');
     };
 
     // Functions.

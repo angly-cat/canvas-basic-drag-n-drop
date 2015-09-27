@@ -14,6 +14,9 @@
 #canvas_container {
     background: url("img/bg.jpg");
 }
+#canvas_container.dragging {
+	cursor: move;
+}
 .image_button {
 	position: absolute;
 	transform: translateX(-50%);
