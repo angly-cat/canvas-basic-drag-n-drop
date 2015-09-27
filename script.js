@@ -25,7 +25,8 @@
             DEFAULT_WIDTH: 150,
             DEFAULT_HEIGHT: 250,
             OFFSET_X: 10,
-            OFFSET_Y: 20
+            OFFSET_Y: 20,
+            ADDITION: 20
         },
         gImages = {},
         gImagesOnCanvasStack = [];
@@ -52,16 +53,19 @@
         if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
             gIsAnimationFrameRequested = true;
 
-            var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
-
-            gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += currentCoords.x - gLastCoords.x;
-            gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += currentCoords.y - gLastCoords.y;
-
-            gLastCoords.x = currentCoords.x;
-            gLastCoords.y = currentCoords.y;
-
             window.requestAnimationFrame(function() {
                 gIsAnimationFrameRequested = false;
+
+                var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
+
+                gClearAreaOfImageWithIndex(gCurrentDraggingImageIndex);
+
+                gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += currentCoords.x - gLastCoords.x;
+                gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += currentCoords.y - gLastCoords.y;
+
+                gLastCoords.x = currentCoords.x;
+                gLastCoords.y = currentCoords.y;
+
                 gDraw();
             });
         }
@@ -145,6 +149,7 @@
             var lastImageOnStack, index = getIndexOfImageOnStack(aNumber);
 
             if (~index) {
+                gClearAreaOfImageWithIndex(index);
                 // Remove image from canvas image stack array.
                 gImagesOnCanvasStack = gImagesOnCanvasStack.slice(0, index).concat(gImagesOnCanvasStack.slice(index + 1));
             } else {
@@ -169,13 +174,6 @@
     }
 
     function gDraw() {
-        gCtx.clearRect(
-            -gCanvasMetrics.offsetX/gCanvasMetrics.scaleFactor,
-            -gCanvasMetrics.offsetY/gCanvasMetrics.scaleFactor,
-            gCanvasMetrics.width/gCanvasMetrics.scaleFactor,
-            gCanvasMetrics.height/gCanvasMetrics.scaleFactor
-        );
-
         var currentImage;
         for (var i = 0, len = gImagesOnCanvasStack.length; i < len; i++) {
             currentImage = gImagesOnCanvasStack[i];
@@ -199,5 +197,15 @@
             }
         }
         return -1;
+    }
+
+    function gClearAreaOfImageWithIndex(aIndex) {
+        var image = gImagesOnCanvasStack[aIndex];
+        gCtx.clearRect(
+            image.x - gImagesMetrics.ADDITION,
+            image.y - gImagesMetrics.ADDITION,
+            gImagesMetrics.DEFAULT_WIDTH + 2*gImagesMetrics.ADDITION,
+            gImagesMetrics.DEFAULT_HEIGHT + 2*gImagesMetrics.ADDITION
+        );
     }
 })();
