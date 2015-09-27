@@ -5,9 +5,12 @@
     // Function and variables with names starting with 'g' are global.
     // Variables with names starting with 'a' are parameters.
 
+    //************************
+    //* VARIABLE DEFINITIONS *
+    //************************
+
     // Canvas related.
-    var $buttonsContainer = document.getElementById('buttons_container'),
-        $canvasContainer = document.getElementById('canvas_container'),
+    var $canvasContainer = document.getElementById('canvas_container'),
         $canvas = document.getElementById('canvas'),
         gCtx = $canvas.getContext('2d'),
         gCanvasMetrics = {
@@ -39,11 +42,14 @@
         gMouseEvent = null;
 
     // Buttons related.
-    var gButtons = [];
+    var $buttonsContainer = document.getElementById('buttons_container'),
+        gButtons = [];
 
-    // Main code.
+    //************************
+    //*      MAIN CODE       *
+    //************************
 
-    gInitCanvasAndButtonsResizing();
+    gInitCanvasResizingAndButtonsRepositioning();
     gStartImagesLoading();
 
     $canvas.onmousedown = function(aMouseEvent) {
@@ -59,7 +65,6 @@
         }
     };
 
-
     $canvas.onmouseup = function(aMouseEvent) {
         gCurrentDraggingImageIndex = -1;
 
@@ -70,9 +75,11 @@
         $canvas.onmousemove = null;
     };
 
-    // Functions.
+    //************************
+    //*      FUNCTIONS       *
+    //************************
 
-    function gInitCanvasAndButtonsResizing() {
+    function gInitCanvasResizingAndButtonsRepositioning() {
         var debounceTmt = null;
 
         //initial canvas size setting
