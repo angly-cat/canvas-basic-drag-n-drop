@@ -9,50 +9,50 @@
 }
 #canvas_container *,
 #buttons_container * {
-	pointer-events: auto;
+    pointer-events: auto;
 }
 #canvas_container {
     background: url("img/bg.jpg");
 }
 #canvas_container.dragging {
-	cursor: move;
+    cursor: move;
 }
 
 .image_button {
-	position: absolute;
-	transform: translateX(-50%);
+    position: absolute;
+    transform: translateX(-50%);
 }
 
 #info {
-	position: fixed;
-	bottom: 0;
-	right: 0;
-	color: #333;
-	text-align: center;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    color: #333;
+    text-align: center;
 }
 #repo_link {
-	color: #333;
+    color: #333;
     padding: 5px;
-	position: relative;
+    position: relative;
 }
 #repo_link::before {
-	content: '';
-	position: absolute;
-	background: url(https://assets-cdn.github.com/favicon.ico) no-repeat;
-	left: 0;
+    content: '';
+    position: absolute;
+    background: url(https://assets-cdn.github.com/favicon.ico) no-repeat;
+    left: 0;
     top: 50%;
-	width: 16px;
-	height: 16px;
+    width: 16px;
+    height: 16px;
     transform: translateX(-100%) translateY(-50%);
     border-bottom: 1px solid #333;
 }
 
 /* Chrome button text on buttons selection fix */
 body * {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
