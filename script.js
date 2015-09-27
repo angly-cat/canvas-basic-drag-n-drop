@@ -82,7 +82,7 @@
     function gInitCanvasResizingAndButtonsRepositioning() {
         var debounceTmt = null;
 
-        //initial canvas size setting
+        // Initial canvas size setting.
         setCanvasSize();
 
         window.onresize = function() {
@@ -99,12 +99,14 @@
             gCanvasMetrics.height = $canvas.height = window.innerHeight;
             console.log('Canvas size is set to ' + gCanvasMetrics.width + 'x' + gCanvasMetrics.height);
 
-            gCanvasMetrics.scaleFactor = Math.min(gCanvasMetrics.width /gCanvasMetrics.DEFAULT_WIDTH,
-                                                  gCanvasMetrics.height/gCanvasMetrics.DEFAULT_HEIGHT);
+            gCanvasMetrics.scaleFactor = Math.min(
+                gCanvasMetrics.width /gCanvasMetrics.DEFAULT_WIDTH,
+                gCanvasMetrics.height/gCanvasMetrics.DEFAULT_HEIGHT
+            );
             console.log('Scale factor is set to ' + gCanvasMetrics.scaleFactor);
 
             gCanvasMetrics.offsetX = Math.floor(
-                (gCanvasMetrics.width - gCanvasMetrics.DEFAULT_WIDTH *gCanvasMetrics.scaleFactor)/2
+                (gCanvasMetrics.width - gCanvasMetrics.DEFAULT_WIDTH*gCanvasMetrics.scaleFactor)/2
             );
             gCanvasMetrics.offsetY = Math.floor(
                 (gCanvasMetrics.height - gCanvasMetrics.DEFAULT_HEIGHT*gCanvasMetrics.scaleFactor)/2
@@ -129,7 +131,8 @@
     }
 
     function gSetButtonPosition(aButton) {
-        var xFactor = gImagesPaths.length > 1 ? 0.1 + 0.8*aButton.number/(gImagesPaths.length - 1) : 0.5;
+        var xFactor = gImagesPaths.length > 1 ? 0.1 + 0.8*aButton.number/(gImagesPaths.length - 1)
+                                              : 0.5;
         aButton.style.top = gCanvasMetrics.height*0.8 + 'px';
         aButton.style.left =
             (gCanvasMetrics.offsetX + gCanvasMetrics.scaleFactor*gCanvasMetrics.DEFAULT_WIDTH*xFactor) + 'px';
@@ -157,7 +160,7 @@
         }
 
         function buttonClickAction(aNumber) {
-            var lastImageOnStack, index = getIndexOfImageOnStack(aNumber);
+            var index = getIndexOfImageOnStack(aNumber);
 
             if (~index) {
                 gClearAreaOfImageWithIndex(index);
@@ -166,8 +169,8 @@
                     tail = gImagesOnCanvasStack.slice(index + 1);
                 gImagesOnCanvasStack = head.concat(tail);
             } else {
-                lastImageOnStack = gImagesOnCanvasStack.length ? gImagesOnCanvasStack[gImagesOnCanvasStack.length - 1]
-                                                               : null;
+                var lastImageOnStack = gImagesOnCanvasStack.length ? gImagesOnCanvasStack[gImagesOnCanvasStack.length - 1]
+                                                                   : null;
                 gImagesOnCanvasStack.push({
                     x: lastImageOnStack ? lastImageOnStack.x + gImagesMetrics.OFFSET_X
                                         : (gCanvasMetrics.DEFAULT_WIDTH  - gImagesMetrics.DEFAULT_WIDTH) /2,
@@ -176,6 +179,7 @@
                     imageNo: aNumber
                 });
             }
+
             gDraw();
         }
 
@@ -220,7 +224,7 @@
         gCtx.clearRect(
             image.x - gImagesMetrics.ADDITION,
             image.y - gImagesMetrics.ADDITION,
-            gImagesMetrics.DEFAULT_WIDTH + 2*gImagesMetrics.ADDITION,
+            gImagesMetrics.DEFAULT_WIDTH  + 2*gImagesMetrics.ADDITION,
             gImagesMetrics.DEFAULT_HEIGHT + 2*gImagesMetrics.ADDITION
         );
     }
