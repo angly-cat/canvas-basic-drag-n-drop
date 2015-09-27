@@ -55,21 +55,7 @@
         if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
             gIsAnimationFrameRequested = true;
 
-            window.requestAnimationFrame(function() {
-                gIsAnimationFrameRequested = false;
-
-                var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
-
-                gClearAreaOfImageWithIndex(gCurrentDraggingImageIndex);
-
-                gImagesOnCanvasStack[gCurrentDraggingImageIndex].x += currentCoords.x - gLastCoords.x;
-                gImagesOnCanvasStack[gCurrentDraggingImageIndex].y += currentCoords.y - gLastCoords.y;
-
-                gLastCoords.x = currentCoords.x;
-                gLastCoords.y = currentCoords.y;
-
-                gDraw();
-            });
+            window.requestAnimationFrame(gMoveDraggingImageAndRedraw.bind(null, gCurrentDraggingImageIndex, aMouseEvent));
         }
     };
 
@@ -210,5 +196,21 @@
             gImagesMetrics.DEFAULT_WIDTH + 2*gImagesMetrics.ADDITION,
             gImagesMetrics.DEFAULT_HEIGHT + 2*gImagesMetrics.ADDITION
         );
+    }
+
+    function gMoveDraggingImageAndRedraw(aIndex, aMouseEvent) {
+        gIsAnimationFrameRequested = false;
+
+        var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
+
+        gClearAreaOfImageWithIndex(aIndex);
+
+        gImagesOnCanvasStack[aIndex].x += currentCoords.x - gLastCoords.x;
+        gImagesOnCanvasStack[aIndex].y += currentCoords.y - gLastCoords.y;
+
+        gLastCoords.x = currentCoords.x;
+        gLastCoords.y = currentCoords.y;
+
+        gDraw();
     }
 })();
