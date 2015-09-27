@@ -5,8 +5,7 @@
     // Function and variables with names starting with 'g' are global.
     // Variables with names starting with 'a' are parameters.
 
-    // Main code.
-
+    // Canvas related.
     var $buttonsContainer = document.getElementById('buttons_container'),
         $canvasContainer = document.getElementById('canvas_container'),
         $canvas = document.getElementById('canvas'),
@@ -21,6 +20,7 @@
             offsetY: null,
         };
 
+    // Images related.
     var gImagesPaths = ['img/card1.png', 'img/card2.png', 'img/card3.png'],
         gImagesMetrics = {
             DEFAULT_WIDTH: 150,
@@ -32,11 +32,16 @@
         gImages = {},
         gImagesOnCanvasStack = [];
 
+    // Dragging related.
     var gCurrentDraggingImageIndex = -1,
         gLastCoords = { x: null, y: null },
-        gIsAnimationFrameRequested = false;
+        gIsAnimationFrameRequested = false,
+        gMouseEvent = null;
 
+    // Buttons related.
     var gButtons = [];
+
+    // Main code.
 
     gInitCanvasAndButtonsResizing();
     gStartImagesLoading();
@@ -54,14 +59,17 @@
     $canvas.onmousemove = function(aMouseEvent) {
         if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
             gIsAnimationFrameRequested = true;
-
-            window.requestAnimationFrame(gMoveDraggingImageAndRedraw.bind(null, gCurrentDraggingImageIndex, aMouseEvent));
+            gMouseEvent = aMouseEvent;
+            window.requestAnimationFrame(gMoveDraggingImageAndRedraw.bind(null, gCurrentDraggingImageIndex));
         }
     };
 
     $canvas.onmouseup = function(aMouseEvent) {
         gCurrentDraggingImageIndex = -1;
+
         $canvasContainer.classList.remove('dragging');
+
+        gMouseEvent = null;
     };
 
     // Functions.
@@ -198,10 +206,10 @@
         );
     }
 
-    function gMoveDraggingImageAndRedraw(aIndex, aMouseEvent) {
+    function gMoveDraggingImageAndRedraw(aIndex) {
         gIsAnimationFrameRequested = false;
 
-        var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
+        var currentCoords = gCalculateCanvasCoordsFromMouseEvent(gMouseEvent);
 
         gClearAreaOfImageWithIndex(aIndex);
 
