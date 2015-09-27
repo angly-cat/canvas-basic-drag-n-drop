@@ -55,7 +55,7 @@
     $canvas.onmousedown = function(aMouseEvent) {
         var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
         gCurrentDraggingImageIndex = gGetIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
-        if (~gCurrentDraggingImageIndex) {
+        if ((~gCurrentDraggingImageIndex)) {
             $canvasContainer.classList.add('dragging');
 
             gLastCoords.x = currentCoords.x;
@@ -65,7 +65,7 @@
         }
     };
 
-    $canvas.onmouseup = function(aMouseEvent) {
+    $canvas.onmouseup = function() {
         gCurrentDraggingImageIndex = -1;
 
         $canvasContainer.classList.remove('dragging');
@@ -162,7 +162,7 @@
         function buttonClickAction(aNumber) {
             var index = getIndexOfImageOnStack(aNumber);
 
-            if (~index) {
+            if ((~index)) {
                 gClearAreaOfImageWithIndex(index);
 
                 var head = gImagesOnCanvasStack.slice(0, index),
@@ -230,7 +230,7 @@
     }
 
     function gCanvasOnMouseMoveAction(aMouseEvent) {
-        if (~gCurrentDraggingImageIndex && !gIsAnimationFrameRequested) {
+        if ((~gCurrentDraggingImageIndex) && !gIsAnimationFrameRequested) {
             gIsAnimationFrameRequested = true;
             gMouseEvent = aMouseEvent;
             window.requestAnimationFrame(gMoveDraggingImageAndRedraw.bind(null, gCurrentDraggingImageIndex));
