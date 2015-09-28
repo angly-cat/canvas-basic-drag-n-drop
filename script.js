@@ -56,11 +56,10 @@
         var currentCoords = gCalculateCanvasCoordsFromMouseEvent(aMouseEvent);
         gCurrentDraggingImageIndex = gGetIndexOfImageUnderMouse(currentCoords.x, currentCoords.y);
         if ((~gCurrentDraggingImageIndex)) {
-            $canvasContainer.classList.add('dragging');
-
             gLastCoords.x = currentCoords.x;
             gLastCoords.y = currentCoords.y;
 
+            $canvasContainer.classList.add('dragging');
             $canvas.onmousemove = gCanvasOnMouseMoveAction;
         }
     };
@@ -69,9 +68,6 @@
         gCurrentDraggingImageIndex = -1;
 
         $canvasContainer.classList.remove('dragging');
-
-        gMouseEvent = null;
-
         $canvas.onmousemove = null;
     };
 
@@ -164,10 +160,7 @@
 
             if ((~index)) {
                 gClearAreaOfImageWithIndex(index);
-
-                var head = gImagesOnCanvasStack.slice(0, index),
-                    tail = gImagesOnCanvasStack.slice(index + 1);
-                gImagesOnCanvasStack = head.concat(tail);
+                gImagesOnCanvasStack.splice(index, 1);
             } else {
                 var lastImageOnStack = gImagesOnCanvasStack.length ? gImagesOnCanvasStack[gImagesOnCanvasStack.length - 1]
                                                                    : null;
