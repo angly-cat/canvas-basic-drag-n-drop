@@ -13,3 +13,6 @@
 
 ## Лицензия
 Под [лицензией MIT](LICENSE).
+
+## Производительность
+[Тест drawImage на jsperf.com](http://jsperf.com/drawimage-source/7).
