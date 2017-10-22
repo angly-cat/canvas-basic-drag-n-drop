@@ -1,6 +1,6 @@
 # Canvas Basic Drag'n'Drop Demo [![Code Climate](https://codeclimate.com/github/zeird/canvas-basic-drag-n-drop/badges/gpa.svg)](https://codeclimate.com/github/zeird/canvas-basic-drag-n-drop)
 
-Само демо можно посмотреть [здесь](http://zeird.github.io/canvas-basic-drag-n-drop).
+Само демо можно посмотреть [здесь](http://angly-cat.github.io/canvas-basic-drag-n-drop).
 
 ## Особенности
 * Адекватно работает на разных разрешениях монитора и даже при изменении размера браузера.
